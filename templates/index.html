@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Heart Disease Prediction</h1>
+        <form id="predictionForm">
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" step="1" required><br>
+
+            <label for="sex">Sex:</label>
+            <select id="sex" name="sex" required>
+                <option value="0">Female</option>
+                <option value="1">Male</option>
+            </select><br>
+
+            <label for="cp">Chest Pain Type:</label>
+            <select id="cp" name="cp" required>
+                <option value="0">Type 0</option>
+                <option value="1">Type 1</option>
+                <option value="2">Type 2</option>
+                <option value="3">Type 3</option>
+            </select><br>
+
+            <label for="trestbps">Resting BP:</label>
+            <input type="number" id="trestbps" name="trestbps" step="1" required><br>
+
+            <label for="chol">Cholesterol:</label>
+            <input type="number" id="chol" name="chol" step="1" required><br>
+
+            <label for="fbs">FBS > 120 mg/dl:</label>
+            <select id="fbs" name="fbs" required>
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select><br>
+
+            <label for="restecg">Resting ECG:</label>
+            <select id="restecg" name="restecg" required>
+                <option value="0">Normal</option>
+                <option value="1">Abnormal</option>
+            </select><br>
+
+            <label for="thalach">Max Heart Rate:</label>
+            <input type="number" id="thalach" name="thalach" step="1" required><br>
+
+            <label for="exang">Exercise Induced Angina:</label>
+            <select id="exang" name="exang" required>
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select><br>
+
+            <label for="oldpeak">Oldpeak:</label>
+            <input type="number" id="oldpeak" name="oldpeak" step="0.1" required><br>
+
+            <label for="slope">Slope:</label>
+            <select id="slope" name="slope" required>
+                <option value="0">Slope 0</option>
+                <option value="1">Slope 1</option>
+                <option value="2">Slope 2</option>
+            </select><br>
+
+            <label for="ca">Number of Vessels:</label>
+            <select id="ca" name="ca" required>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select><br>
+
+            <label for="thal">Thalasemia:</label>
+            <select id="thal" name="thal" required>
+                <option value="1">Normal</option>
+                <option value="2">Fixed Defect</option>
+                <option value="3">Reversible Defect</option>
+            </select><br>
+
+            <label for="bmi">BMI:</label>
+            <input type="number" id="bmi" name="bmi" step="0.1" required><br>
+
+            <label for="smoking_status">Smoking Status:</label>
+            <select id="smoking_status" name="smoking_status" required>
+                <option value="0">Non-Smoker</option>
+                <option value="1">Smoker</option>
+            </select><br>
+
+            <label for="exercise">Exercise Regularly:</label>
+            <select id="exercise" name="exercise" required>
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select><br>
+
+            <label for="family_history">Family History:</label>
+            <select id="family_history" name="family_history" required>
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select><br>
+
+            <label for="diabetes">Diabetes:</label>
+            <select id="diabetes" name="diabetes" required>
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select><br>
+
+            <button type="submit">Predict Risk</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(data),
+            })
+            .then(response => response.json())
+            .then(result => {
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `<h2>${result.prediction}</h2><p>Probability: ${result.probability}</p>`;
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
